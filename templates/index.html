@@ -19,7 +19,7 @@
     <h3>Saved Users</h3>
     <ul>
         {% for user in users %}
-        <li>{{ user[0] }} - {{ user[1] }} years old - <span style="color:{{ user[2] }}">{{ user[2] }}</span></li>
+        <li>{{ user.username }} - {{ user.age }} years old - <span style="color:{{ user[2] }}">{{ user.color }}</span></li>
         {% endfor %}
     </ul>
 </body>

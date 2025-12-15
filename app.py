@@ -7,6 +7,7 @@ app = Flask(__name__)
 # Initialize database
 def init_db():
     conn = sqlite3.connect("users.db")
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -46,7 +47,7 @@ def index():
     cursor = conn.cursor()
     cursor.execute("SELECT username, age, color FROM users")
     users = cursor.fetchall()
-    print(users)
+    #print(users)
     conn.close()
 
     return render_template("index.html", users=users)
@@ -54,6 +55,7 @@ def index():
 if __name__ == "__main__":
     # Use debug=True for automatic reload on code changes
     #app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-    
+
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
