@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
+import os
 
 app = Flask(__name__)
 
-# Create database and table
+# Initialize database
 def init_db():
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
@@ -26,7 +27,7 @@ def index():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        age = request.form["age"]
+        age = int(request.form["age"])
         color = request.form["color"]
 
         conn = sqlite3.connect("users.db")
@@ -40,7 +41,16 @@ def index():
 
         return redirect("/")
 
-    return render_template("index.html")
+    # Fetch users to display
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT username, age, color FROM users")
+    users = cursor.fetchall()
+    print(users)
+    conn.close()
+
+    return render_template("index.html", users=users)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Use debug=True for automatic reload on code changes
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
