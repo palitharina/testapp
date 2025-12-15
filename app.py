@@ -34,7 +34,7 @@ def index():
 
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
-        cursor.execute("update users set age=100 where username='juan   '")
+        cursor.execute("update users set age=100 where username='juan'")
         """
         cursor.execute(
             "INSERT INTO users (username, password, age, color) VALUES (?, ?, ?, ?)",
@@ -48,10 +48,11 @@ def index():
 
     # Fetch users to display
     conn = sqlite3.connect("users.db")
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("SELECT username, age, color FROM users")
     users = cursor.fetchall()
-    #print(users)
+    print(users)
     conn.close()
 
     return render_template("index.html", users=users)
