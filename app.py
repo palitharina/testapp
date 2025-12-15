@@ -26,6 +26,7 @@ init_db()
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
+
         username = request.form["username"]
         password = request.form["password"]
         age = int(request.form["age"])
@@ -33,10 +34,13 @@ def index():
 
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
+        cursor.execute("update users set age=100 where username='juan   '")
+        """
         cursor.execute(
             "INSERT INTO users (username, password, age, color) VALUES (?, ?, ?, ?)",
             (username, password, age, color)
         )
+        """
         conn.commit()
         conn.close()
 
