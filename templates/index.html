@@ -17,9 +17,12 @@
     </form>
     
     <h3>Saved Users</h3>
-    <ul>
+    <ul style="list-style-type: none; padding: 0; text-align: center;">
         {% for user in users %}
-        <li>{{ user.username }} - {{ user.age }} years old - <span style="color:{{ user.color }}">{{ user.color }}</span></li>
+        <li style="margin: 5px 0;">
+            {{ user.username }} - {{ user.age }} years old - 
+            <span style="color:{{ user.color }}">{{ user.color }}</span>
+        </li>
         {% endfor %}
     </ul>
 </body>

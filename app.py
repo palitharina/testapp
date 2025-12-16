@@ -6,11 +6,12 @@ import os
 app = Flask(__name__)
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    DATABASE_URL = "postgres://flaskuser2:a1234@localhost:5432/flaskdb"
 
 def get_conn():
     return psycopg2.connect(DATABASE_URL)
 
-# Initialize database
 def init_db():
     conn = get_conn()
     cursor = conn.cursor()
@@ -27,10 +28,7 @@ def init_db():
     cursor.close()
     conn.close()
 
-if os.environ.get("DATABASE_URL"):
-    init_db()
-    
-#init_db()
+init_db()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -43,10 +41,7 @@ def index():
         conn = get_conn()
         cursor = conn.cursor()
         cursor.execute(
-            """
-            INSERT INTO users (username, password, age, color)
-            VALUES (%s, %s, %s, %s)
-            """,
+            "INSERT INTO users (username, password, age, color) VALUES (%s, %s, %s, %s)",
             (username, password, age, color)
         )
         conn.commit()
@@ -55,17 +50,16 @@ def index():
 
         return redirect("/")
 
-    # Fetch users to display
     conn = get_conn()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    #cursor.execute("delete from users")
     cursor.execute("SELECT username, age, color FROM users")
+    #conn.commit()
+    #conn.close()
+    #return
     users = cursor.fetchall()
     cursor.close()
     conn.close()
-
-    # Optional debug prints
-    for u in users:
-        print(dict(u))
 
     return render_template("index.html", users=users)
 
