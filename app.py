@@ -27,7 +27,10 @@ def init_db():
     cursor.close()
     conn.close()
 
-init_db()
+if os.environ.get("DATABASE_URL"):
+    init_db()
+    
+#init_db()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
