@@ -9,21 +9,32 @@
     <h2>User Form</h2>
 
     <form method="POST">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <input type="number" name="age" placeholder="Age" required>
-        <input type="color" name="color" required>
-        <button type="submit">Submit</button>
+        <label for="table">Select table:</label>
+        <select name="table" id="table">
+            {% for t in tables %}
+                <option value="{{ t.table_name }}">
+                    {{ t.table_name }}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="text" name="username" placeholder="Username">
+        <input type="number" name="age" placeholder="Age">
+        <button type="submit" name="action" value="adduser">Add</button>
+        <button type="submit" name="action" value="showusers">Show Users</button>
+        <button type="submit" name="action" value="delete">Delete Users</button>
+        <button type="submit" name="action" value="deletetable">Delete Table</button>
+
     </form>
     
-    <h3>Saved Users</h3>
+    {% if show_results %}
+    <h3>Query Result</h3>
     <ul style="list-style-type: none; padding: 0; text-align: center;">
-        {% for user in users %}
+        {% for d in data %}
         <li style="margin: 5px 0;">
-            {{ user.username }} - {{ user.age }} years old - 
-            <span style="color:{{ user.color }}">{{ user.color }}</span>
+            {{ d.username }} - {{ d.age }}
         </li>
         {% endfor %}
     </ul>
+    {% endif %}
 </body>
 </html>
