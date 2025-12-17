@@ -3,6 +3,12 @@ import psycopg2
 import psycopg2.extras
 import os
 
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if not DATABASE_URL:
+    DATABASE_URL = "postgres://flaskuser2:a1234@localhost:5432/flaskdb"
+
+
 def get_conn():
     return psycopg2.connect(DATABASE_URL)
 
@@ -36,12 +42,6 @@ app = Flask(__name__)
 
 with app.app_context():
     init_db()
-
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-if not DATABASE_URL:
-    DATABASE_URL = "postgres://flaskuser2:a1234@localhost:5432/flaskdb"
-
 
 
 @app.route("/", methods=["GET", "POST"])
