@@ -3,17 +3,8 @@ import psycopg2
 import psycopg2.extras
 import os
 
-app = Flask(__name__)
-
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-if not DATABASE_URL:
-    DATABASE_URL = "postgres://flaskuser2:a1234@localhost:5432/flaskdb"
-
-def get_conn():
-    return psycopg2.connect(DATABASE_URL)
-
 def init_db():
+    print("initing...")
     conn = get_conn()
     cursor = conn.cursor()
     cursor.execute("""
@@ -37,6 +28,20 @@ def init_db():
     cursor.close()
     conn.close()
     print("initdb")
+
+app = Flask(__name__)
+
+with app.app_context():
+    init_db()
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if not DATABASE_URL:
+    DATABASE_URL = "postgres://flaskuser2:a1234@localhost:5432/flaskdb"
+
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -150,7 +155,7 @@ def checkdb():
         print("Tables available:", [t[0] for t in tables])
 
 if __name__ == "__main__":
-    init_db()
+    #init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
     #checkdb()
