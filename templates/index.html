@@ -22,8 +22,8 @@
         <input type="number" name="age" placeholder="Age">
         <button type="submit" name="action" value="adduser">Add</button>
         <button type="submit" name="action" value="showusers">Show Users</button>
+        <button type="submit" name="action" value="showusers2">Show Same Users</button>
         <button type="submit" name="action" value="delete">Delete Users</button>
-        <button type="submit" name="action" value="deletetable">Delete Table</button>
 
     </form>
     
@@ -32,7 +32,11 @@
     <ul style="list-style-type: none; padding: 0; text-align: center;">
         {% for d in data %}
         <li style="margin: 5px 0;">
-            {{ d.username }} - {{ d.age }}
+            {% if joined %}
+                {{ d.username }} - {{ d.age1 }} - {{ d.age2 }}
+            {% else %}
+                {{ d.username }} - {{ d.age }}
+            {% endif %}  
         </li>
         {% endfor %}
     </ul>

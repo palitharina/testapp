@@ -13,7 +13,6 @@ def get_conn():
     return psycopg2.connect(DATABASE_URL)
 
 def init_db():
-    print("initing...")
     conn = get_conn()
     cursor = conn.cursor()
     cursor.execute("""
@@ -36,7 +35,6 @@ def init_db():
 
     cursor.close()
     conn.close()
-    print("initdb")
 
 app = Flask(__name__)
 
@@ -65,10 +63,10 @@ def index():
         return tables
 
     aksyon='none'
-
+    joined=False
     if request.method == "POST":
         selected_table = request.form.get("table")
-        print(selected_table)
+        #print(selected_table)
         action = request.form.get("action")
 
         conn = get_conn()
@@ -82,52 +80,61 @@ def index():
                 (username, age)
             )
             aksyon="adduser"
-            print("aksyon ", aksyon)
+            #print("aksyon ", aksyon)
 
         elif action == "showusers":
             cursor.execute(f"select username, age from {selected_table}")
             data = cursor.fetchall()
             aksyon="showusers"
-            print("aksyon ", aksyon)
+            #print("aksyon ", aksyon)
+
+        elif action == "showusers2":
+            cursor.execute(f"select u1.username, u1.age age1, u2.age age2 from users u1 inner join users2 u2 on u1.username=u2.username")
+            data = cursor.fetchall()
+            aksyon="showusers2"
+            #print("aksyon ", aksyon)
+            joined=True
 
         elif action == "delete":
             cursor.execute(f"delete from {selected_table}")
             aksyon="delete"
-            print("aksyon ", aksyon)
+            #print("aksyon ", aksyon)
 
         elif action == "deletetable":
             cursor.execute(f"drop table if exists {selected_table}")
             aksyon="drop"
-            print("aksyon ", aksyon)
-            print(f"***{selected_table} dropped***")
+            #print("aksyon ", aksyon)
+            #print(f"***{selected_table} dropped***")
 
         conn.commit()
         cursor.close()
         conn.close()
 
-        if action=='showusers':
+        if action in ("showusers", "showusers2"):
             show_results=True
         else:
             show_results=False
 
-        print("if ", selected_table)
+        #print("if ", selected_table)
         #return redirect("/")
         tables=get_tables()
+        #print("joined ", joined)
         return render_template(
             "index.html",
             tables=tables,
             selected_table=selected_table,
             data=data,
-            show_results=show_results
+            show_results=show_results,
+            joined=joined
         )
         print("hello")
     else:
         selected_table = request.args.get("table")
-        print("else ", selected_table)
+        #print("else ", selected_table)
 
-    print("getting tables")
+    #print("getting tables")
     tables=get_tables()
-    print(tables)
+    #print(tables)
     allowed_tables = [t["table_name"] for t in tables]
     if not selected_table and allowed_tables:
         selected_table = allowed_tables[0]
@@ -142,25 +149,7 @@ def index():
         show_results=request.method=="POST"
     )
 
-def checkdb():
-    conn = get_conn()
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = 'public'
-    """)
-    tables = cursor.fetchall()
-    cursor.close()
-    conn.close()
-
-    if not tables:
-        print("No tables found in the database")
-    else:
-        print("Tables available:", [t[0] for t in tables])
-
 if __name__ == "__main__":
-    #init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-    #checkdb()
+
