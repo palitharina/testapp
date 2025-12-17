@@ -3,6 +3,9 @@ import psycopg2
 import psycopg2.extras
 import os
 
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
+
 def init_db():
     print("initing...")
     conn = get_conn()
@@ -39,8 +42,6 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 if not DATABASE_URL:
     DATABASE_URL = "postgres://flaskuser2:a1234@localhost:5432/flaskdb"
 
-def get_conn():
-    return psycopg2.connect(DATABASE_URL)
 
 
 @app.route("/", methods=["GET", "POST"])
