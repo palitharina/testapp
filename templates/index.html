@@ -12,8 +12,8 @@
         <label for="table">Select table:</label>
         <select name="table" id="table">
             {% for t in tables %}
-                <option value="{{ t.table_name }}">
-                    {% if t.table_name == selected_table %}{% endif %}
+                <option value="{{ t.table_name }}"
+                    {% if t.table_name == selected_table %}selected{% endif %}>
                     {{ t.table_name }}
                 </option>
             {% endfor %}

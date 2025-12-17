@@ -109,7 +109,8 @@ def index():
             show_results=True
         else:
             show_results=False
-    
+
+        print("if ", selected_table)
         #return redirect("/")
         tables=get_tables()
         return render_template(
@@ -119,8 +120,11 @@ def index():
             data=data,
             show_results=show_results
         )
+        print("hello")
     else:
         selected_table = request.args.get("table")
+        print("else ", selected_table)
+
     print("getting tables")
     tables=get_tables()
     print(tables)
