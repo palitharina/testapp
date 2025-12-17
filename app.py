@@ -115,15 +115,15 @@ def index():
         )
     else:
         selected_table = request.args.get("table")
-
+    print("getting tables")
     tables=get_tables()
-
+    print(tables)
     allowed_tables = [t["table_name"] for t in tables]
     if not selected_table and allowed_tables:
         selected_table = allowed_tables[0]
 
     show_results=request.method=="POST"
-    print(show_results)
+    #print(show_results)
     return render_template(
         "index.html",
         tables=tables,
@@ -132,7 +132,25 @@ def index():
         show_results=request.method=="POST"
     )
 
+def checkdb():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+    """)
+    tables = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    if not tables:
+        print("No tables found in the database")
+    else:
+        print("Tables available:", [t[0] for t in tables])
+
 if __name__ == "__main__":
+    init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-    init_db()
+    #checkdb()
