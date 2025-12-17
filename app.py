@@ -6,6 +6,7 @@ import os
 app = Flask(__name__)
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
+
 if not DATABASE_URL:
     DATABASE_URL = "postgres://flaskuser2:a1234@localhost:5432/flaskdb"
 
@@ -35,9 +36,7 @@ def init_db():
 
     cursor.close()
     conn.close()
-
-#init_db()
-
+    print("initdb")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -114,28 +113,15 @@ def index():
             data=data,
             show_results=show_results
         )
+    else:
+        selected_table = request.args.get("table")
 
     tables=get_tables()
-
-    # 2️⃣ Pick default table
-    selected_table = request.args.get("table")
 
     allowed_tables = [t["table_name"] for t in tables]
     if not selected_table and allowed_tables:
         selected_table = allowed_tables[0]
-    """
-    conn = get_conn()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    # 3️⃣ Load rows from selected table
-    data = []
-    if selected_table in allowed_tables:
-        cursor.execute(f"SELECT * FROM {selected_table}")
-        data = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-    """
     show_results=request.method=="POST"
     print(show_results)
     return render_template(

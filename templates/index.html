@@ -13,6 +13,7 @@
         <select name="table" id="table">
             {% for t in tables %}
                 <option value="{{ t.table_name }}">
+                    {% if t.table_name == selected_table %}{% endif %}
                     {{ t.table_name }}
                 </option>
             {% endfor %}
